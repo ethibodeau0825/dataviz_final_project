@@ -1,0 +1,142 @@
+---
+title: "Data Visualization - Mini-Project 1"
+author: "Elise Thibodeau `ethibodeau0825@floridapoly.edu`"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+I chose the **Cereals.csv** dataset because of  its rich collection of nutritional information that allows for meaningful analysis and the creation of a variety of interesting visualizations. After exploring the cereal dataset, I noticed that many of the observations shared common characteristics, such as manufacturer and cereal type. These categorical variables presented opportunities for meaningful comparisons. A combination of bar charts, a boxplot, and a scatterplot was used to highlight different features of the dataset, including category distributions, variability among manufacturers, and relationships between nutritional variables. Together, these visualizations provide a more complete understanding of the patterns and trends present within the cereal data.
+
+```{r}
+#Using the cereal dataset
+cereal <- read_csv("../data/Cereals.csv")
+head(cereal)
+summary(cereal)
+```
+
+```{r}
+#Grouping cerealys by type and counting the amount of each type
+cereal %>%
+  group_by(type) %>%
+  summarise(count = n())
+```
+### Figure 1
+**Figure 1** is the distribution of cereal by calories. Most cereals fall within the 101–125 calorie range, making it the most common category in the dataset. In contrast, very few cereals contain more than 150 calories or fewer than 75 calories per serving. This suggests that cereal manufacturers tend to produce products with moderate calorie content rather than extremely low or high caloric options.
+
+```{r, fig.alt = "Bar chart showing the distribution of cereals across five calorie ranges. Most cereals fall in the 101–125 calorie range (39 cereals), followed by 76–100 calories (25 cereals). Far fewer cereals are in the 0–75 (5 cereals), 126–150 (7 cereals), and 151+ (1 cereal) calorie ranges, indicating that most cereals contain between 76 and 125 calories per serving."}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(htmlwidgets)
+
+plot_data <- cereal %>%
+  mutate(
+    calorie_range = cut(
+      calories,
+      breaks = c(0, 75, 100, 125, 150, 200),
+      labels = c("0-75", "76-100", "101-125", "126-150", "151+")
+    )
+  ) %>%
+  count(calorie_range)
+
+p <- ggplot(
+  plot_data,
+  aes(
+    x = calorie_range,
+    y = n,
+    fill = calorie_range,
+    text = paste(
+      "Calorie Range:", calorie_range,
+      "<br>Number of Cereals:", n
+    )
+  )
+) +
+  geom_col() +
+  labs(
+    title = "Distribution of Cereal by Calories",
+    x = "Calories per Serving",
+    y = "Number of Cereals",
+    fill = "Calorie Range"
+  ) +
+  scale_fill_viridis_d(option = "plasma") +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
+
+interactive_plot <- ggplotly(p, tooltip = "text")
+
+interactive_plot
+
+```
+
+### Figure 2
+
+**Figure 2** is a boxplot that compares the distribution of calories per serving across cereal manufacturers. Most manufacturers have similar median calorie levels, but manufacturers Q, P, and R exhibit greater variability in calorie content. Several outliers are visible, particularly for manufacturer K, indicating the presence of cereals with unusually high or low-calorie counts. The visualization reveals differences not only in typical calorie levels but also in the consistency of products offered by each manufacturer.
+
+```{r, fig.alt = "Boxplot showing the distribution of cereal calories per serving across manufacturers. Most manufacturers have median calorie values around 100–110 calories per serving. Manufacturer N has the lowest median and the smallest spread, while manufacturers K, P, and R have higher medians with greater variability. Several manufacturers, particularly K and G, have high-calorie outliers reaching up to 160 calories per serving, indicating that although most cereals cluster around 100–120 calories, a few products contain substantially more calories."}
+#Distribution of calories per serving by manufacturer
+ggplot(cereal,
+       aes(x = reorder(mfr, calories, median),
+           y = calories,
+           fill = mfr)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Calories per Serving by Manufacturer",
+    x = "Manufacturer",
+    y = "Distribution of Calories per Serving",
+    fill = "Manufacturer"
+  ) +
+  scale_fill_viridis_d(
+    option = "plasma",
+    begin = 0.15,
+    end = 0.9
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "right"
+  )
+
+```
+
+### Figure 3
+
+**Figure 3** is a scatterplot that examines the relationship between sugar content and calories in cereals. Each point represents a cereal, while the trend line indicates the overall relationship between the two variables. The upward slope of the trend line suggests a positive association, meaning that cereals with higher sugar content tend to contain more calories per serving
+
+```{r, fig.alt = "Scatterplot showing the relationship between sugar content and calories per serving for cereals, with a fitted linear trend line. Each point represents one cereal. The trend line slopes upward, indicating a positive relationship: cereals with more sugar generally contain more calories. Although there is considerable variation, most cereals fall between 90 and 120 calories per serving and contain 5 to 12 grams of sugar, with a few higher-calorie outliers reaching up to 160 calories."}
+#Sugar vs calories in each cereal scatterplot
+ggplot(cereal, aes(x = sugars, y = calories)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(
+    title = "Sugar vs Calories",
+  )
+```
+
+### Interpretation
+
+The story I would tell with these plots is to *show how calorie count varies throughout the cereal market*. Most cereals contain a moderate number of calories per serving, but manufacturers differ in the average calorie content of their products. The visuals lead to findings which provide insight into *how nutritional characteristics vary among cereal products and manufacturers*.
+
+I applied multiple principles of design and data visualization throughout this assignment. **Contrast** was used by selecting visualization types that best highlighted different aspects of the data. A bar chart was used to compare the distribution of cereals across calorie ranges, a boxplot emphasized differences in calorie distributions among manufacturers and identified potential outliers, and a scatterplot revealed the relationship between sugar content and calories. **Repetition was** maintained through the consistent use of formatting, labeling, and overall chart structure across all visualizations, creating a cohesive presentation. **Alignment** was carefully considered to ensure that titles, axes, labels, and graphical elements were organized and easy to follow. **Proximity** was used by grouping related information together within each visualization, helping viewers quickly understand the relationships being presented. Additionally, **clear titles, descriptive labels, and simplified formatting** were used to improve readability and reduce visual clutter. 
+
+Together, these design principles help the visualizations emphasize comparisons, reveal patterns in cereal nutrition, and create a cohesive narrative that guides the viewer from understanding calorie distributions to exploring how manufacturers and sugar content contribute to differences among cereals.
+
+
