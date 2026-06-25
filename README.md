@@ -15,7 +15,7 @@ The first project that I analyzed a cereal nutrition dataset using R and ggplot2
 **Sample data visualization:** 
 
 _[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/echarts.png" width="70%" height="70%">
+<img src="https://github.com/ethibodeau0825/dataviz_final_project/blob/main/figures/Proj1.png" width="70%" height="70%">
 
 
 ## Project 02
@@ -27,7 +27,7 @@ I analyzed over 170,000 GPS collar observations from 57 Kodiak bears collected b
 **Sample data visualization:** 
 
 _[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/fl_higher_ed.png" width="80%" height="80%">
+<img src="https://github.com/ethibodeau0825/dataviz_final_project/blob/main/figures/Proj2.png" width="80%" height="80%">
 
 (you can place your figures in the `figures/` folder and use the `![](path_to_picture)` option to add the pictures here)
 
@@ -41,9 +41,9 @@ Developed an interactive weather dashboard using Plotly to explore historical we
 **Sample data visualization:** 
 
 _[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/concrete_density.png" width="80%" height="80%">
+<img src="https://github.com/ethibodeau0825/dataviz_final_project/blob/main/figures/Proj3.png" width="80%" height="80%">
 
 
 ### Moving Forward
 
-_Please add here a short reflection on what you learned and what you plan to continue exploring in terms of data visualization, data storytelling, reproducible research, and/or related topics._
+Throughout this course, I gained a much deeper understanding of how effective data visualization goes beyond creating graphs. I learned the importance of selecting appropriate chart types, using accessible color palettes, writing meaningful captions and analysis, and applying data storytelling techniques to communicate insights clearly. I also became more comfortable using R and GitHub to create reproducible and interactive analyses. Moving forward, I plan to continue exploring interactive visualizations, geospatial analysis, and reproducible research workflows while further developing my ability to use data to tell compelling stories that support decision-making.
