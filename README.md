@@ -27,8 +27,6 @@ I analyzed over 170,000 GPS collar observations from 57 Kodiak bears collected b
 
 <img src="https://github.com/ethibodeau0825/dataviz_final_project/blob/main/figures/Proj2.png" width="80%" height="80%">
 
-(you can place your figures in the `figures/` folder and use the `![](path_to_picture)` option to add the pictures here)
-
 
 ## Project 03
 
