@@ -1,6 +1,6 @@
 # Data Visualization and Reproducible Research
 
-> Firstname Lastname. 
+> Elise Thibodeau. 
 
 
 The following is a sample of products created during the _"Data Visualization and Reproducible Research"_ course.
@@ -8,7 +8,9 @@ The following is a sample of products created during the _"Data Visualization an
 
 ## Project 01
 
-In the `project_01/` folder you can find... _[add short description of your revised project here]_
+In the `project_01/` folder you can find Project 1 – Cereal Nutrition Data Visualization
+
+The first project that I analyzed a cereal nutrition dataset using R and ggplot2 to create clear, accessible visualizations. The analysis examined calorie distributions, manufacturer differences, and the relationship between sugar content and calories while applying data visualization best practices, colorblind-friendly palettes, and effective figure captions.
 
 **Sample data visualization:** 
 
@@ -18,7 +20,9 @@ _[include your favorite visualization from this project here]_
 
 ## Project 02
 
-In this project, I explored ... _[short description of your revised project goes here]_ Find the code and report in the `project_02/` folder.
+In this project, I explored Project 2 – Kodiak Bear GPS Movement Analysis
+
+I analyzed over 170,000 GPS collar observations from 57 Kodiak bears collected between 2008 and 2015. Created interactive, spatial, and statistical visualizations to investigate movement patterns, estimated travel distances, habitat use, and daily activity cycles using R, ggplot2, plotly, and sf.
 
 **Sample data visualization:** 
 
@@ -30,7 +34,9 @@ _[include your favorite visualization from this project here]_
 
 ## Project 03
 
-In this project, I explored ... _[short description of the data visualizations you for this part of the project produced goes here]_
+In this project, I explored Project 3 – Tampa Weather Data Dashboard
+
+Developed an interactive weather dashboard using Plotly to explore historical weather patterns in Tampa. The project features interactive visualizations that allow users to examine temperature trends, precipitation, and seasonal changes through dynamic charts and dropdown menus.
 
 **Sample data visualization:** 
 

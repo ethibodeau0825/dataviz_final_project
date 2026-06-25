@@ -93,7 +93,7 @@ interactive_plot
 
 ```{r, fig.alt = "Boxplot showing the distribution of cereal calories per serving across manufacturers. Most manufacturers have median calorie values around 100–110 calories per serving. Manufacturer N has the lowest median and the smallest spread, while manufacturers K, P, and R have higher medians with greater variability. Several manufacturers, particularly K and G, have high-calorie outliers reaching up to 160 calories per serving, indicating that although most cereals cluster around 100–120 calories, a few products contain substantially more calories."}
 #Distribution of calories per serving by manufacturer
-ggplot(cereal,
+fig_two <- ggplot(cereal,
        aes(x = reorder(mfr, calories, median),
            y = calories,
            fill = mfr)) +
@@ -114,6 +114,14 @@ ggplot(cereal,
     plot.title = element_text(face = "bold", hjust = 0.5),
     legend.position = "right"
   )
+
+ggsave(
+  filename = "figures/distribution_of_calories.png",
+  plot = fig_two,
+  width = 8,
+  height = 5,
+  dpi = 300
+)
 
 ```
 
