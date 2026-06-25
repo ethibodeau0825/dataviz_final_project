@@ -1,0 +1,361 @@
+---
+title: "Mini Project 3"
+author: "Elise THibodeau - ethibodeau0825@floridapoly.edu"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+    toc_float: true
+---
+
+# Data Visualization Project 03
+
+
+In this exercise you will explore methods to create different types of data visualizations (such as plotting text data, or exploring the distributions of continuous variables).
+
+
+## PART 1: Density Plots
+
+Using the dataset obtained from FSU's [Florida Climate Center](https://climatecenter.fsu.edu/climate-data-access-tools/downloadable-data), for a station at Tampa International Airport (TPA) for 2022, attempt to recreate the charts shown below which were generated using data from 2016. You can read the 2022 dataset using the code below: 
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+weather_tpa <- read_csv("../data/tpa_weather_2022.csv")
+# random sample 
+sample_n(weather_tpa, 4)
+```
+
+See Slides from Week 4 of Visualizing Relationships and Models (slide 10) for a reminder on how to use this type of dataset with the `lubridate` package for dates and times (example included in the slides uses data from 2016).
+
+Using the 2022 data: 
+
+(a) Create a plot like the one below:
+
+```{r, echo = FALSE, out.width="80%", fig.align='center', fig.alt ="Histogram panels showing the distribution of daily maximum temperatures for each month in Tampa during 2022. Temperatures are coolest in winter and warmest in summer, with most summer days reaching 85°F to 95°F"}
+library(tidyverse)
+library(lubridate)
+
+
+# Create date and month name variables
+weather_tpa <- weather_tpa %>%
+  mutate(
+    date = make_date(year, month, day),
+    month_name = factor(
+      month(date, label = TRUE, abbr = FALSE),
+      levels = month.name
+    )
+  )
+
+# Create plot
+ggplot(weather_tpa, aes(x = max_temp, fill = month)) +
+  geom_histogram(
+    binwidth = 3,
+    color = "white"
+  ) +
+  facet_wrap(~ month_name, ncol = 4) +
+  scale_fill_viridis_c(option = "D") +
+  labs(
+    x = "Maximum temperatures",
+    y = "Number of Days"
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    legend.position = "none",
+    strip.background = element_rect(fill = "grey85"),
+    strip.text = element_text(size = 12),
+    panel.grid.major = element_line(color = "grey85"),
+    panel.grid.minor = element_line(color = "grey92")
+  )
+```
+
+Hint: the option `binwidth = 3` was used with the `geom_histogram()` function.
+
+(b) Create a plot like the one below:
+
+```{r, echo = FALSE, out.width="80%", fig.align='center', fig.alt = "Density plot of daily maximum temperatures in Tampa during 2022. Most temperatures fall between 85°F and 95°F, while temperatures below 70°F occur relatively infrequently."}
+library(tidyverse)
+
+ggplot(weather_tpa, aes(x = max_temp)) +
+  geom_density(
+    fill = "gray50",
+    color = "gray25",
+    linewidth = 1,
+    bw = 0.5,
+    kernel = "gaussian"
+  ) +
+  labs(
+    x = "Maximum temperature",
+    y = "density"
+  ) +
+  theme_gray(base_size = 16)
+```
+
+Hint: check the `kernel` parameter of the `geom_density()` function, and use `bw = 0.5`.
+
+(c) Create a plot like the one below:
+
+```{r, echo = FALSE, out.width="80%", fig.align='center', fig.alt = "Density plots of daily maximum temperatures by month in Tampa during 2022. Temperatures increase from winter into summer, peak between June and September, and then decrease through fall and winter. Summer months show temperatures concentrated around 85°F to 95°F."}
+library(tidyverse)
+library(lubridate)
+
+# Density plot by month
+ggplot(weather_tpa,
+       aes(x = max_temp, fill = month)) +
+  geom_density(
+    color = "black",
+    alpha = 0.7
+  ) +
+  facet_wrap(~ month_name, ncol = 4) +
+  scale_fill_viridis_c(option = "D") +
+  labs(
+    title = "Density plots for each month in 2022",
+    x = "Maximum temperatures",
+    y = NULL
+  ) +
+  theme_bw(base_size = 14) +
+  theme(
+    legend.position = "none",
+    strip.background = element_rect(fill = "grey85"),
+    strip.text = element_text(size = 12)
+  )
+```
+
+Hint: default options for `geom_density()` were used. 
+
+(d) Generate a plot like the chart below:
+
+
+```{r, echo = FALSE, out.width="80%", fig.align='center', fig.alt = "Ridgeline density plots of monthly maximum temperatures in Tampa during 2022. Winter months show cooler temperatures, while summer months are concentrated between 85°F and 95°F. Median temperatures are indicated by vertical lines within each ridge."}
+library(tidyverse)
+library(lubridate)
+library(ggridges)
+library(viridis)
+
+
+ggplot(weather_tpa, aes(
+  x = max_temp,
+  y = month_name,
+  fill = after_stat(x)
+)) +
+  geom_density_ridges_gradient(
+    scale = 2.5,
+    rel_min_height = 0.01,
+    quantile_lines = TRUE,
+    quantiles = 2,
+    color = "black"
+  ) +
+  scale_fill_viridis_c(option = "plasma") +
+  labs(
+    x = "Maximum temperature (in Fahrenheit degrees)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "right"
+  )
+```
+
+Hint: use the`{ggridges}` package, and the `geom_density_ridges()` function paying close attention to the `quantile_lines` and `quantiles` parameters. The plot above uses the `plasma` option (color scale) for the _viridis_ palette.
+
+
+(e) Create a plot of your choice that uses the attribute for precipitation _(values of -99.9 for temperature or -99.99 for precipitation represent missing data)_.
+
+```{r, fig.alt = "Bar chart displaying average daily precipitation for each month in Tampa during 2022. Precipitation increases during late spring and summer, peaks in July and September at approximately 0.4 inches per day on average, and decreases during the winter months. The chart highlights Tampa's wetter summer rainy season and drier winter season."}
+library(tidyverse)
+library(lubridate)
+
+monthly_rain <- weather_tpa %>%
+  filter(precipitation != -99.99) %>%
+  group_by(month) %>%
+  summarize(avg_precip = mean(precipitation))
+
+ggplot(monthly_rain,
+       aes(x = factor(month),
+           y = avg_precip,
+           fill = avg_precip)) +
+  geom_col() +
+  scale_fill_viridis_c(option = "viridis") +
+  labs(
+    title = "Average Daily Precipitation by Month",
+    x = "Month",
+    y = "Average Precipitation"
+  ) +
+  theme_bw()
+```
+
+
+## PART 2 
+
+> **You can choose to work on either Option (A) or Option (B)**. Remove from this template the option you decided not to work on. 
+
+
+### Option (A): Visualizing Text Data
+
+Review the set of slides (and additional resources linked in it) for visualizing text data: Week 6 PowerPoint slides of Visualizing Text Data. 
+
+Choose any dataset with text data, and create at least one visualization with it. For example, you can create a frequency count of most used bigrams, a sentiment analysis of the text data, a network visualization of terms commonly used together, and/or a visualization of a topic modeling approach to the problem of identifying words/documents associated to different topics in the text data you decide to use. 
+
+Make sure to include a copy of the dataset in the `data/` folder, and reference your sources if different from the ones listed below:
+
+- [Billboard Top 100 Lyrics](https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/data/BB_top100_2015.csv)
+
+- [RateMyProfessors comments](https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/data/rmp_wit_comments.csv)
+
+- [FL Poly News Articles](https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/data/flpoly_news_SP23.csv)
+
+
+(to get the "raw" data from any of the links listed above, simply click on the `raw` button of the GitHub page and copy the URL to be able to read it in your computer using the `read_csv()` function)
+
+```{r, fig.alt = "Bar chart displaying the 20 most frequently used words in Billboard Top 100 song lyrics from 2015. The most common words are 'im', 'dont', and 'love', followed by words such as 'baby', 'wanna', and 'youre'."}
+library("tidytext")
+# Load data
+songs <- read_csv("../data/BB_top100_2015.csv")
+
+head(songs)
+
+# Create word frequency data
+word_counts <- songs %>%
+  select(Song, Artist, Lyrics) %>%
+  unnest_tokens(word, Lyrics) %>%
+  anti_join(stop_words, by = "word") %>%
+  count(word, sort = TRUE) %>%
+  slice_max(n, n = 20)
+
+# Plot top 20 words
+ggplot(word_counts, aes(x = reorder(word, n), y = n, fill = n)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_viridis_c(option = "viridis") +
+  labs(
+    title = "Most Common Words in Billboard Top 100 Lyrics",
+    subtitle = "Based on Billboard Top 100 songs from 2015",
+    x = "Word",
+    y = "Frequency"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+### Interactive Plot
+
+```{r}
+#Maximum Temperatures by month - dropdown interactive chart
+# Create empty plot
+library(plotly)
+p <- plot_ly()
+
+# Add one trace for each month
+for(i in 1:12){
+
+  month_data <- weather_tpa %>%
+    filter(month == i)
+
+  p <- p %>%
+    add_lines(
+      data = month_data,
+      x = ~date,
+      y = ~max_temp,
+      name = unique(as.character(month_data$month_name)),
+      visible = ifelse(i == 1, TRUE, FALSE),
+      hovertemplate =
+        paste(
+          "<b>Date:</b> %{x}<br>",
+          "<b>Max Temp:</b> %{y}°F<extra></extra>"
+        )
+    )
+}
+
+# Create dropdown buttons
+buttons <- list()
+
+for(i in 1:12){
+
+  visible <- rep(FALSE, 12)
+  visible[i] <- TRUE
+
+  buttons[[i]] <- list(
+    method = "update",
+    args = list(
+      list(visible = visible),
+      list(title = paste("Maximum Temperatures -",
+                         month.name[i]))
+    ),
+    label = month.name[i]
+  )
+}
+
+# Add dropdown menu
+p <- p %>%
+  layout(
+    title = "Maximum Temperatures - January",
+    xaxis = list(title = "Date"),
+    yaxis = list(title = "Maximum Temperature (°F)"),
+    updatemenus = list(
+      list(
+        type = "dropdown",
+        active = 0,
+        buttons = buttons
+      )
+    )
+  )
+
+p
+
+```
+
+### Before Vs After
+
+## Before
+
+```{r, fig.alt = "Pie chart showing the top 10 artists with songs in the Billboard Top 100. Slice sizes represent the number of songs contributed by each artist."}
+top_artists <- songs %>%
+  count(Artist, sort = TRUE) %>%
+  slice_head(n = 10)
+
+ggplot(top_artists,
+       aes(x = "", y = n, fill = Artist)) +
+  geom_col(color = "white") +
+  coord_polar(theta = "y") +
+  scale_fill_manual(values = rainbow(10)) +
+  labs(
+    title = "Top Artists in Billboard Top 100 Songs"
+  ) +
+  theme_void()
+```
+## Improved Chart
+
+```{r, fig.alt = "Horizontal bar chart showing the 10 artists with the most songs in the Billboard Top 100. Bars are ordered from lowest to highest count and include labels showing the exact number of songs."}
+top_artists <- songs %>%
+  count(Artist, sort = TRUE) %>%
+  slice_head(n = 10) %>%
+  mutate(Artist = reorder(Artist, n))
+
+ggplot(top_artists,
+       aes(x = n,
+           y = Artist,
+           fill = n)) +
+  geom_col() +
+  geom_text(
+    aes(label = n),
+    hjust = -0.2
+  ) +
+  scale_fill_viridis_c(option = "plasma") +
+  labs(
+    title = "Artists with the Most Billboard Top 100 Songs",
+    subtitle = "Billboard Top 100 Songs (2015)",
+    x = "Number of Songs",
+    y = "Artist"
+  ) +
+  coord_cartesian(
+    xlim = c(0, max(top_artists$n) + 1)
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+The original chart used a rainbow-colored pie chart, which made comparisons difficult because viewers had to estimate differences in slice sizes and rely on a separate legend. The redesigned bar chart places all artists on a common scale, sorts them by frequency, and uses a more accessible color palette. These changes reduce visual clutter and make the ranking and differences between artists much easier to understand.
+
